@@ -11,15 +11,18 @@ class Ship:  # Для представления кораблей
         self._length = length  # Длина корабля (от 1 до 4)
         self._tp = tp  # Направление (1 - горизонтальное, 2 - вертикальное)
         self._x, self._y = x, y  # Координата начала корабля
-        self._is_move = True  # True - корабль может перемещаться, False - не может. Если хоть 1 попадание, то False
-        self._cells = [1 for i in range(self._length)]  # Список длиной _length. 1 - нет попадания, 2 - попадание
+        # True - корабль может перемещаться, False - не может. Если хоть 1 попадание, то False
+        self._is_move = True
+        # Список длиной _length. 1 - нет попадания, 2 - попадание
+        self._cells = [1 for i in range(self._length)]
         self.ship_coord = 'Координаты не сгенерированы'
         if self._x is not None and self._y is not None:
             self.generate_ship_coord()
 
     def generate_ship_coord(self):
         vector1, vector2 = 0 if self._tp == 1 else 1, 1 if self._tp == 1 else 0
-        self.ship_coord = [(self._x + i * vector1, self._y + i * vector2) for i in range(self._length)]
+        self.ship_coord = [(self._x + i * vector1, self._y + i * vector2)
+                           for i in range(self._length)]
 
     def check_length_tp(self, l, tp):  # Проверка длины и направление корабля
         if l not in range(1, 5) or tp not in range(1, 3) or not isinstance(tp, int) or not isinstance(l, int):
@@ -40,10 +43,10 @@ class Ship:  # Для представления кораблей
             raise IndexError('Корабль поврежден, движение невозможно')
         try:
             vector1, vector2 = 0 if self._tp == 1 else 1, 1 if self._tp == 1 else 0
-            self._x, self._y = (self._x - 1 * vector1, self._y - 1 * vector2) if go == -1 else (self._x + 1 * vector1, self._y + 1 * vector2)
+            self._x, self._y = (self._x - 1 * vector1, self._y - 1 * vector2) if go == - \
+                1 else (self._x + 1 * vector1, self._y + 1 * vector2)
         except:
             pass
-
 
     def is_collide(self, ship):  # Проверка на то, пересекается ли корабль с другим
         c = ship.get_start_coords()
@@ -51,7 +54,8 @@ class Ship:  # Для представления кораблей
         if self._length == 1:
             coord = x_y,
         else:
-            coord = (x_y, (x_y[0], x_y[1] + self._length - 1)) if self._tp == 1 else (x_y, (x_y[0] + self._length - 1, x_y[1]))
+            coord = (x_y, (x_y[0], x_y[1] + self._length - 1)
+                     ) if self._tp == 1 else (x_y, (x_y[0] + self._length - 1, x_y[1]))
 
         for q in coord:
             for i in ((q[0] - 1, q[1]), (q[0] - 1, q[1] + 1), (q[0], q[1] + 1), (q[0] + 1, q[1] + 1), (q[0], q[1]),
@@ -60,7 +64,8 @@ class Ship:  # Для представления кораблей
                     return True
         return False
 
-    def is_out_pole(self, size=10):  # Если корабль выходит за поле, вернёт True, если нет, то False
+    # Если корабль выходит за поле, вернёт True, если нет, то False
+    def is_out_pole(self, size=10):
         x_pole = self._x + self._length - 1 if self._tp == 2 else self._x
         y_pole = self._y + self._length - 1 if self._tp == 1 else self._y
         if x_pole > size - 1 or y_pole > size - 1:
@@ -70,7 +75,8 @@ class Ship:  # Для представления кораблей
     def __setattr__(self, key, value):
         if key in ('_x', '_y') and value is not None:
             if value < 0 or value > 10:
-                raise IndexError(f'Координата {key} выходит за размер поля 10 на 10')
+                raise IndexError(
+                    f'Координата {key} выходит за размер поля 10 на 10')
         self.__dict__[key] = value
 
     def __getitem__(self, item):
@@ -100,10 +106,14 @@ class GamePole:  # Для описания игрового поля
             raise TypeError('Size должно быть положительным числом')
 
     def init(self):
-        add_3_size_ship = [self._ships.append(Ship(4, tp=randint(1, 2))) for i in range(1)]
-        add_3_size_ship = [self._ships.append(Ship(3, tp=randint(1, 2))) for i in range(2)]
-        add_2_size_ship = [self._ships.append(Ship(2, tp=randint(1, 2))) for i in range(3)]
-        add_1_size_ship = [self._ships.append(Ship(1, tp=randint(1, 2))) for i in range(4)]
+        add_3_size_ship = [self._ships.append(
+            Ship(4, tp=randint(1, 2))) for i in range(1)]
+        add_3_size_ship = [self._ships.append(
+            Ship(3, tp=randint(1, 2))) for i in range(2)]
+        add_2_size_ship = [self._ships.append(
+            Ship(2, tp=randint(1, 2))) for i in range(3)]
+        add_1_size_ship = [self._ships.append(
+            Ship(1, tp=randint(1, 2))) for i in range(4)]
         pole_check = []
         for ship_main in self._ships:
             count_ship_main = True
@@ -111,8 +121,8 @@ class GamePole:  # Для описания игрового поля
                 ship_main.set_start_coords(randint(0, 10), randint(0, 10))
                 if not ship_main.is_out_pole(self.size):
                     if len(pole_check) == 0:
-                            count_ship_main = False
-                            pole_check.append(ship_main)
+                        count_ship_main = False
+                        pole_check.append(ship_main)
                     else:
                         count = 0
                         for i in pole_check:
@@ -133,18 +143,21 @@ class GamePole:  # Для описания игрового поля
             else:
                 self.move_one_ship(index, -1)
 
-    def move_one_ship(self, index, vector):  # True, если сдвинулся, False - если не сдвинулся
+    # True, если сдвинулся, False - если не сдвинулся
+    def move_one_ship(self, index, vector):
         ship = copy(self._ships[index])
         if not ship.is_out_pole(self.size):
             ship.move(vector)
-        check_move_all = list(True if i != ship and not ship.is_collide(i) else False for i in self._ships)
+        check_move_all = list(True if i != ship and not ship.is_collide(
+            i) else False for i in self._ships)
         if (True if len(list(filter(lambda x: x, check_move_all))) == (len(self._ships) - 1) else False) and not ship.is_out_pole(self.size):
             self._ships[index].move(vector)
             vec1, vec2 = (0, 1) if ship._tp == 1 else (1, 0)
             if vector == 1:
                 self.pole[ship._x - 1 * vec1][ship._y - 1 * vec2] = 0
             else:
-                self.pole[ship._x + 1 * vec1 * (ship._length)][ship._y + 1 * vec2 * (ship._length)] = 0
+                self.pole[ship._x + 1 * vec1 *
+                          (ship._length)][ship._y + 1 * vec2 * (ship._length)] = 0
             return True
         return False
 
@@ -152,7 +165,8 @@ class GamePole:  # Для описания игрового поля
         for ship in self._ships[:i]:
             vector_1, vector_2 = 0 if ship._tp == 1 else 1, 1 if ship._tp == 1 else 0
             for i in range(ship._length):
-                self.pole[ship.get_start_coords()[0] + 1 * i * vector_1][ship.get_start_coords()[1] + 1 * i * vector_2] = ship._cells[i]
+                self.pole[ship.get_start_coords(
+                )[0] + 1 * i * vector_1][ship.get_start_coords()[1] + 1 * i * vector_2] = ship._cells[i]
 
     def show(self):
         unicode = {0: '⬜', 1: '🔴', 2: '❌'}
@@ -173,7 +187,6 @@ class SeaBattle:
         self.pole_computer.init()
         self.computer_pole_fire = [['⬜'] * 10 for i in range(10)]
 
-
         print(f'\n{chr(10146)}Для победы нужно набрать 20 очков (1 очко - 1 попадание)\n'
               f'{chr(10146)}Данное количество очков наберётся тогда, когда будут уничтожены все вражеские корабли\n'
               f'{chr(10146)}Если корабль взорвется, то вокруг него автоматически проставятся крестики и эти поля будут считаться стрелянными\n')
@@ -181,7 +194,8 @@ class SeaBattle:
         # Данные для стрельбы компьютера
         self.yes_hit = True  # Пока True, компьютер будет стрелять
         self.x_comp_hit, self.y_comp_hit = None, None  # Для запоминания выстрела
-        self.x_comp_hit2, self.y_comp_hit2 = None, None  # Для запоминания второго выстрела
+        # Для запоминания второго выстрела
+        self.x_comp_hit2, self.y_comp_hit2 = None, None
         self.hit_index = 0  # Чтобы контролировать весь фон попадания
         self.hit_ship_computer = 0  # Количества попаданий компьютера
         self.random_hit = True  # Разрешение на случайную стрельбу, изначально разрешено
@@ -192,9 +206,11 @@ class SeaBattle:
         self.hit_tuple2 = None  # Для третьего и четвертого выстрела
         self.hit_index2 = 0  # Чтобы контролировать НУЖНЫЙ фон
         self.block_hit_tuple2 = True  # Разрешаем создавать НУЖНЫЙ фон для осознанного выстрел
-        self.block_hit_tuple2_end = False  # Запрет на создание НУЖНОГО ПОСЛЕДНЕГО фона для осознанного выстрела
+        # Запрет на создание НУЖНОГО ПОСЛЕДНЕГО фона для осознанного выстрела
+        self.block_hit_tuple2_end = False
         self.nums_hit = 0  # Для контроля того, когда запоминать второй выстрел
-        self.cells_computer = []  # Список для выстрелов компьютера, здесь ячейки, по которым он стрелять не будет
+        # Список для выстрелов компьютера, здесь ячейки, по которым он стрелять не будет
+        self.cells_computer = []
         self.countssss = 0  # Счетчик для остановки при бесконечном цикле, потом УДАЛИТЬ
         self.result_game = None  # Итог игры, показывает, кто выиграл
 
@@ -205,8 +221,9 @@ class SeaBattle:
             # Тут стреляет игрок
             next_step_gamer = True
             while next_step_gamer:
-                print(f'{chr(127993)}Количество ваших очков: {hit_gamer}{' ' * 29}{chr(128187)}Количество очков, которые набрал компьютер: {self.hit_ship_computer}')
-                print(f'Вражеское поле, выстрелы совершайте по нему{' ' * 15} Выстрелы, которые совершил компьютер по вашему полю')
+                print(f'{chr(127993)}Количество ваших очков: {hit_gamer}{" " * 29}{chr(128187)}Количество очков, которые набрал компьютер: {self.hit_ship_computer}')
+                print(
+                    f'Вражеское поле, выстрелы совершайте по нему{" " * 15} Выстрелы, которые совершил компьютер по вашему полю')
                 self.show_gamer_pole_fire()
                 check_hit_gamer = True
                 x_gamer, y_gamer = None, None
@@ -220,15 +237,18 @@ class SeaBattle:
                         print('Координаты должны быть целым числом')
                         continue
                     if (int(x_gamer), int(y_gamer)) in self.check_coord:
-                        print('На эту точку уже был произведён выстрел, сделайте другой ход')
+                        print(
+                            'На эту точку уже был произведён выстрел, сделайте другой ход')
                         continue
                     if int(x_gamer) not in range(1, 11) or int(y_gamer) not in range(1, 11):
-                        print('Выстрел выходит за границы поля. Координаты должны быть в диапазоне [1, 10]')
+                        print(
+                            'Выстрел выходит за границы поля. Координаты должны быть в диапазоне [1, 10]')
                         continue
                     check_hit_gamer = False
                 self.check_coord.append((int(x_gamer), int(y_gamer)))
                 # Производится выстрел
-                self.step_fire(int(x_gamer) - 1, int(y_gamer) - 1, self.pole_computer, self.gamer_pole_fire, 2)
+                self.step_fire(int(x_gamer) - 1, int(y_gamer) - 1,
+                               self.pole_computer, self.gamer_pole_fire, 2)
 
                 if self.pole_computer.pole[int(x_gamer) - 1][int(y_gamer) - 1] == 1:
                     print('Ты попал')
@@ -278,7 +298,8 @@ class SeaBattle:
         for i in range(1, 10):
             sleep(0.3)
             print(i * '.')
-        print('Победа кожаного мешка' if self.result_game == 1 else 'Победа бездушной машины')
+        print('Победа кожаного мешка' if self.result_game ==
+              1 else 'Победа бездушной машины')
 
     def hit_cumputer_deliberate(self):
         next_step_computer = True
@@ -289,31 +310,34 @@ class SeaBattle:
             if self.num_hit == 1:  # Одно попадание, стреляем по всему фону
 
                 x_new, y_new = self.x_comp_hit - 1, self.y_comp_hit - 1
-                hit_tuple = ((x_new + 1, y_new), (x_new - 1, y_new), (x_new, y_new + 1), (x_new, y_new - 1))
+                hit_tuple = ((x_new + 1, y_new), (x_new - 1, y_new),
+                             (x_new, y_new + 1), (x_new, y_new - 1))
 
                 for fire in hit_tuple[self.hit_index:]:
-                    if 0 <= fire[0] <= 9 and 0 <= fire[1] <= 9:  # Если выстрел находится в зоне поля
+                    # Если выстрел находится в зоне поля
+                    if 0 <= fire[0] <= 9 and 0 <= fire[1] <= 9:
 
                         # Проверяем, не стрелял ли в эту точку компьютер
-                        if self.computer_pole_fire[fire[0]][fire[1]] == '⬜':  # Если не стрелял, то делает выстрел
-                            self.step_fire(fire[0], fire[1], self.pole_gamer, self.computer_pole_fire, 1) # Выстрел
-                            self.cells_computer.append((fire[0] + 1, fire[1] + 1))  # Добавляем выстрел в стрелянный
+                        # Если не стрелял, то делает выстрел
+                        if self.computer_pole_fire[fire[0]][fire[1]] == '⬜':
+                            self.step_fire(
+                                fire[0], fire[1], self.pole_gamer, self.computer_pole_fire, 1)  # Выстрел
+                            # Добавляем выстрел в стрелянный
+                            self.cells_computer.append(
+                                (fire[0] + 1, fire[1] + 1))
                             self.show_computer_pole_fire()  # Отображение поля после данного выстрела
-
 
                             # Проверяем, попал ли компьютер
                             if self.pole_gamer.pole[fire[0]][fire[1]] == 1:
                                 self.hit_ship_computer += 1  # Прибавляем компьютеру попадание
                                 yes_kill = 0  # 0 - корабль не уничтожен, 1 - уничтожен
 
-
-
                                 # Проверить, уничтожен ли корабль
                                 for ship in self.pole_gamer._ships:
                                     if (fire[0], fire[1]) in ship.ship_coord:
-                                        if all(True if i == 2 else False for i in ship._cells):  # Корабль уничтожен
+                                        # Корабль уничтожен
+                                        if all(True if i == 2 else False for i in ship._cells):
                                             yes_kill = 1
-
 
                                 if yes_kill == 1:  # Корабль уничтожен
                                     # Но значит нужно запустить рандомный выстрел !!!!!!!!!!!!!!!!!
@@ -321,11 +345,12 @@ class SeaBattle:
                                     self.next_hit = False  # Запрещаем осознанные выстрелы
                                     next_step_computer = False  # Выходим из текущего while
                                     self.hit_index = 0  # Обнуляем общий фон
-                                    self.x_comp_hit, self.y_comp_hit = None, None  # Обнуляем выстрелы, которые запоминали
-                                    print('Компьютер попал и уничтожил ваш корабль')
+                                    # Обнуляем выстрелы, которые запоминали
+                                    self.x_comp_hit, self.y_comp_hit = None, None
+                                    print(
+                                        'Компьютер попал и уничтожил ваш корабль')
                                     sleep(1)
                                     return True  # Выходим с функции
-
 
                                 else:  # Корабль НЕ уничтожен после ВТОРОГО выстрела
                                     '''
@@ -342,7 +367,9 @@ class SeaBattle:
                                     # if self.nums_hit == 2:
 
                                     self.hit_index = 0  # Обнуляем общий фон
-                                    self.x_comp_hit2, self.y_comp_hit2 = fire[0] + 1, fire[1] + 1  # Запоминаем второй выстрел
+                                    # Запоминаем второй выстрел
+                                    self.x_comp_hit2, self.y_comp_hit2 = fire[0] + \
+                                        1, fire[1] + 1
                                     print('Компьютер попал')
                                     sleep(1)
                                     break  # Выходим из цикла for, который обстреливает ОБЩИЙ фон
@@ -365,25 +392,34 @@ class SeaBattle:
 
                     if self.vector_two_hit == 1:  # Горизонтальное положение
                         if self.y_comp_hit < self.y_comp_hit2:
-                            self.hit_tuple2 = [(self.x_comp_hit, self.y_comp_hit - 1), (self.x_comp_hit2, self.y_comp_hit2 + 1)]
+                            self.hit_tuple2 = [
+                                (self.x_comp_hit, self.y_comp_hit - 1), (self.x_comp_hit2, self.y_comp_hit2 + 1)]
                         else:
-                            self.hit_tuple2 = [(self.x_comp_hit, self.y_comp_hit + 1), (self.x_comp_hit2, self.y_comp_hit2 - 1)]
+                            self.hit_tuple2 = [
+                                (self.x_comp_hit, self.y_comp_hit + 1), (self.x_comp_hit2, self.y_comp_hit2 - 1)]
                     else:  # Вертикальное положение
                         if self.x_comp_hit < self.x_comp_hit2:
-                            self.hit_tuple2 = [(self.x_comp_hit - 1, self.y_comp_hit), (self.x_comp_hit2 + 1, self.y_comp_hit2)]
+                            self.hit_tuple2 = [
+                                (self.x_comp_hit - 1, self.y_comp_hit), (self.x_comp_hit2 + 1, self.y_comp_hit2)]
                         else:
-                            self.hit_tuple2 = [(self.x_comp_hit + 1, self.y_comp_hit), (self.x_comp_hit2 - 1, self.y_comp_hit2)]
+                            self.hit_tuple2 = [
+                                (self.x_comp_hit + 1, self.y_comp_hit), (self.x_comp_hit2 - 1, self.y_comp_hit2)]
 
                 for fire in self.hit_tuple2[self.hit_index2:]:
                     fire = list(fire)
                     fire[0] -= 1
                     fire[1] -= 1
-                    if 0 <= fire[0] <= 9 and 0 <= fire[1] <= 9:  # Если выстрел находится в зоне поля
+                    # Если выстрел находится в зоне поля
+                    if 0 <= fire[0] <= 9 and 0 <= fire[1] <= 9:
 
                         # Проверяем, не стрелял ли в эту точку компьютер
-                        if self.computer_pole_fire[fire[0]][fire[1]] == '⬜':  # Если не стрелял, то делает выстрел
-                            self.step_fire(fire[0], fire[1], self.pole_gamer, self.computer_pole_fire, 1)  # Выстрел
-                            self.cells_computer.append((fire[0] + 1, fire[1] + 1))  # Добавляем выстрел в стрелянный
+                        # Если не стрелял, то делает выстрел
+                        if self.computer_pole_fire[fire[0]][fire[1]] == '⬜':
+                            self.step_fire(
+                                fire[0], fire[1], self.pole_gamer, self.computer_pole_fire, 1)  # Выстрел
+                            # Добавляем выстрел в стрелянный
+                            self.cells_computer.append(
+                                (fire[0] + 1, fire[1] + 1))
                             self.show_computer_pole_fire()  # Отображение поля после данного выстрела
                             # Проверяем, попал ли компьютер
                             if self.pole_gamer.pole[fire[0]][fire[1]] == 1:
@@ -394,7 +430,8 @@ class SeaBattle:
                                 # Проверить, уничтожен ли корабль
                                 for ship in self.pole_gamer._ships:
                                     if (fire[0], fire[1]) in ship.ship_coord:
-                                        if all(True if i == 2 else False for i in ship._cells):  # Корабль уничтожен
+                                        # Корабль уничтожен
+                                        if all(True if i == 2 else False for i in ship._cells):
                                             yes_kill2 = 1
 
                                 if yes_kill2 == 1:  # Попал и корабль уничтожен
@@ -403,13 +440,16 @@ class SeaBattle:
                                     self.next_hit = False  # Запрещаем осознанные выстрелы
                                     next_step_computer = False  # Выходим из текущего while
                                     self.hit_index2 = 0  # Обнуляем НУЖНЫЙ фон
-                                    self.x_comp_hit, self.y_comp_hit = None, None  # Обнуляем выстрелы, которые запоминали
-                                    self.x_comp_hit2, self.y_comp_hit2 = None, None  # Обнуляем выстрелы, которые запоминали
+                                    # Обнуляем выстрелы, которые запоминали
+                                    self.x_comp_hit, self.y_comp_hit = None, None
+                                    # Обнуляем выстрелы, которые запоминали
+                                    self.x_comp_hit2, self.y_comp_hit2 = None, None
                                     self.num_hit = 1  # Обнуляем попадания, чтобы в следующий раз стрелял по фону
                                     self.vector_two_hit = None  # Обнуляем направление корабля
                                     self.hit_tuple2 = None  # Обнуляем список с ФОНОМ
                                     self.block_hit_tuple2 = True  # Разрешаем определять третий ФОН
-                                    print('Компьютер попал и уничтожил ваш корабль')
+                                    print(
+                                        'Компьютер попал и уничтожил ваш корабль')
                                     sleep(1)
                                     return True  # Выходим с функции
 
@@ -429,35 +469,34 @@ class SeaBattle:
                                         if self.y_comp_hit < fire[1]:
                                             if self.y_comp_hit < self.y_comp_hit2:
                                                 self.hit_tuple2 = [(self.x_comp_hit, self.y_comp_hit - 1),
-                                                                (fire[0], fire[1] + 1)]
+                                                                   (fire[0], fire[1] + 1)]
                                             else:
                                                 self.hit_tuple2 = [(self.x_comp_hit, self.y_comp_hit2 - 1),
-                                                                    (fire[0], fire[1] + 1)]
+                                                                   (fire[0], fire[1] + 1)]
 
                                         else:
                                             if self.y_comp_hit < self.y_comp_hit2:
                                                 self.hit_tuple2 = [(self.x_comp_hit, self.y_comp_hit2 + 1),
-                                                                    (fire[0], fire[1] - 1)]
+                                                                   (fire[0], fire[1] - 1)]
                                             else:
                                                 self.hit_tuple2 = [(self.x_comp_hit, self.y_comp_hit + 1),
-                                                                    (fire[0], fire[1] - 1)]
-
+                                                                   (fire[0], fire[1] - 1)]
 
                                     else:  # Вертикальный корабль
                                         if self.x_comp_hit < fire[0]:
                                             if self.x_comp_hit > self.x_comp_hit2:
                                                 self.hit_tuple2 = [(self.x_comp_hit - 1, self.y_comp_hit),
-                                                                    (fire[0] + 1, fire[1])]
+                                                                   (fire[0] + 1, fire[1])]
                                             else:
                                                 self.hit_tuple2 = [(self.x_comp_hit2 - 1, self.y_comp_hit),
-                                                                    (fire[0] + 1, fire[1])]
+                                                                   (fire[0] + 1, fire[1])]
                                         else:
                                             if self.x_comp_hit > self.x_comp_hit2:
                                                 self.hit_tuple2 = [(self.x_comp_hit + 1, self.y_comp_hit),
-                                                                    (fire[0] - 1, fire[1])]
+                                                                   (fire[0] - 1, fire[1])]
                                             else:
                                                 self.hit_tuple2 = [(self.x_comp_hit2 + 1, self.y_comp_hit),
-                                                                    (fire[0] - 1, fire[1])]
+                                                                   (fire[0] - 1, fire[1])]
 
                                     self.block_hit_tuple2_end = False  # Запрещаем переопределять последний ФОН
                                     print('Компьютер попал')
@@ -473,7 +512,6 @@ class SeaBattle:
                                 self.yes_hit = False  # Заканчивает стрелять и выстрел переходит игроку
                                 return True  # Выходим с функции
 
-
     def hit_cumputer_random(self):
         random_hit = True
         x_comp, y_comp = None, None
@@ -487,10 +525,12 @@ class SeaBattle:
                     check_cells = False
 
             # Производится выстрел на рандом
-            self.step_fire(x_comp - 1, y_comp - 1, self.pole_gamer, self.computer_pole_fire, 1)  # Выстрел
+            self.step_fire(x_comp - 1, y_comp - 1, self.pole_gamer,
+                           self.computer_pole_fire, 1)  # Выстрел
             self.show_computer_pole_fire()  # Отображение поля после данного выстрела
 
-            if self.pole_gamer.pole[x_comp - 1][y_comp - 1] == 1:  # Проверка на попадание
+            # Проверка на попадание
+            if self.pole_gamer.pole[x_comp - 1][y_comp - 1] == 1:
                 self.hit_ship_computer += 1  # Прибавляем попадание компьютеру
 
                 # Если корабль уничтожен, то снова стреляет наугад
@@ -520,11 +560,12 @@ class SeaBattle:
         return False  # Следующий выстрел будет снова наугад
 
     def show_gamer_pole_fire(self):
-        print(f' 1  2  3   4  5  6   7  8  9  10{' ' * 27} 1  2  3   4  5  6   7  8  9  10')
+        print(
+            f' 1  2  3   4  5  6   7  8  9  10{" " * 27} 1  2  3   4  5  6   7  8  9  10')
         # 20 19
         for q in range(len(self.gamer_pole_fire)):
-            print(f' '.join(f"""{''.join(str(q) for q in self.gamer_pole_fire[q])}{q + 1} {' ' * 10 if q != (len(self.gamer_pole_fire) - 1) else ' ' * 9} {''.join(str(q) for q in self.computer_pole_fire[q])}{q + 1}"""))
-
+            print(f' '.join(
+                f"""{''.join(str(q) for q in self.gamer_pole_fire[q])}{q + 1} {' ' * 10 if q != (len(self.gamer_pole_fire) - 1) else ' ' * 9} {''.join(str(q) for q in self.computer_pole_fire[q])}{q + 1}"""))
 
     def show_computer_pole_fire(self):
         print(f' 1  2  3   4  5  6   7  8  9  10\n' +
@@ -539,22 +580,26 @@ class SeaBattle:
             for ship in pole._ships:
                 vector_1, vector_2 = 0 if ship._tp == 1 else 1, 1 if ship._tp == 1 else 0
                 for i in range(ship._length):
-                    x_ship, y_ship = (ship.get_start_coords()[0] + 1 * i * vector_1), (ship.get_start_coords()[1] + 1 * i * vector_2)
+                    x_ship, y_ship = (ship.get_start_coords()[
+                                      0] + 1 * i * vector_1), (ship.get_start_coords()[1] + 1 * i * vector_2)
                     if x == x_ship and y == y_ship:
                         ship._cells[i] = 2
 
                     if all(True if i == 2 else False for i in ship._cells):
                         for i in range(ship._length):
-                            x_ship, y_ship = (ship.get_start_coords()[0] + 1 * i * vector_1), (ship.get_start_coords()[1] + 1 * i * vector_2)
+                            x_ship, y_ship = (ship.get_start_coords()[
+                                              0] + 1 * i * vector_1), (ship.get_start_coords()[1] + 1 * i * vector_2)
                             for q in ((x_ship - 1, y_ship), (x_ship + 1, y_ship), (x_ship, y_ship - 1), (x_ship, y_ship + 1),
-                                (x_ship - 1, y_ship - 1), (x_ship + 1, y_ship - 1), (x_ship - 1, y_ship + 1), (x_ship + 1, y_ship + 1)):
+                                      (x_ship - 1, y_ship - 1), (x_ship + 1, y_ship - 1), (x_ship - 1, y_ship + 1), (x_ship + 1, y_ship + 1)):
                                 if 0 <= q[0] <= 9 and 0 <= q[1] <= 9:
                                     if pole_fire[q[0]][q[1]] == '⬜':
                                         pole_fire[q[0]][q[1]] = '❌'
                                         if cells_comp == 1:
-                                            self.cells_computer.append((q[0] + 1, q[1] + 1))
+                                            self.cells_computer.append(
+                                                (q[0] + 1, q[1] + 1))
                                         else:
-                                            self.check_coord.append((q[0] + 1, q[1] + 1))
+                                            self.check_coord.append(
+                                                (q[0] + 1, q[1] + 1))
 
             return True
         return False
